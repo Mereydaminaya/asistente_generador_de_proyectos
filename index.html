@@ -1,0 +1,1441 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asistente Generador de Proyectos</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script>
+  // Configuracion de Tailwind CSS con soporte para modo oscuro por clase y paleta dorada
+  if (window.tailwind) {
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              50: '#fbf8f1',
+              100: '#f5eedc',
+              200: '#ead9b0',
+              300: '#dcc184',
+              400: '#c9a45c',
+              500: '#b8893b',
+              600: '#9a6f2c',
+              700: '#7a5724',
+              800: '#5c4120'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  }
+</script>
+<style>
+  body { font-family: Inter, system-ui, sans-serif; }
+  .font-display { font-family: "Plus Jakarta Sans", Inter, sans-serif; }
+  .font-serif-t { font-family: "Playfair Display", Georgia, serif; }
+  .field {
+    width: 100%;
+    border-radius: .6rem;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    padding: .5rem .7rem;
+    font-size: .875rem;
+    color: #0f172a;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .field:focus {
+    border-color: #b8893b;
+    box-shadow: 0 0 0 3px rgba(184, 137, 59, .18);
+  }
+  .dark .field {
+    background: #18181b;
+    border-color: #3f3f46;
+    color: #f4f4f5;
+  }
+  .field.invalid {
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .18) !important;
+  }
+  .lbl {
+    display: block;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: .35rem;
+  }
+  .dark .lbl { color: #a1a1aa; }
+  .card {
+    background: #fff;
+    border: 1px solid #e9e4d8;
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+  .dark .card {
+    background: #141416;
+    border-color: #2c2a26;
+  }
+  .seg {
+    display: inline-flex;
+    background: #f1ede3;
+    border-radius: .7rem;
+    padding: .2rem;
+    gap: .2rem;
+    flex-wrap: wrap;
+  }
+  .dark .seg { background: #232120; }
+  .seg button {
+    padding: .42rem .8rem;
+    border-radius: .55rem;
+    font-size: .82rem;
+    font-weight: 600;
+    color: #6b6152;
+  }
+  .dark .seg button { color: #c9bfae; }
+  .seg button[aria-pressed="true"] {
+    background: #fff;
+    color: #7a5724;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .08);
+  }
+  .dark .seg button[aria-pressed="true"] {
+    background: #3a3226;
+    color: #ead9b0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    border-radius: .65rem;
+    padding: .55rem 1rem;
+    font-size: .85rem;
+    font-weight: 600;
+    transition: all .15s;
+  }
+  .btn-gold { background: #b8893b; color: #fff; }
+  .btn-gold:hover { background: #9a6f2c; }
+  .btn-ghost {
+    border: 1px solid #e2d8c3;
+    color: #7a5724;
+    background: transparent;
+  }
+  .btn-ghost:hover { background: #fbf8f1; }
+  .dark .btn-ghost {
+    border-color: #4a4032;
+    color: #ead9b0;
+  }
+  .dark .btn-ghost:hover { background: #232120; }
+  .author {
+    border: 1.5px solid #e9e4d8;
+    border-radius: .8rem;
+    padding: .75rem .85rem;
+    text-align: left;
+    transition: all .15s;
+    background: #fff;
+  }
+  .dark .author {
+    background: #18181b;
+    border-color: #2c2a26;
+  }
+  .author:hover { border-color: #c9a45c; }
+  .author[aria-pressed="true"] {
+    border-color: #b8893b;
+    background: #fbf8f1;
+  }
+  .dark .author[aria-pressed="true"] {
+    background: #2a241b;
+    border-color: #b8893b;
+  }
+  .out {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  .out h4 {
+    font-weight: 700;
+    margin: 14px 0 4px;
+    font-size: 12pt;
+  }
+  .out p, .out li { text-align: justify; }
+  .out ol {
+    padding-left: 1.4rem;
+    list-style: decimal;
+  }
+  .out li { margin-bottom: 4px; }
+  .ph { color: #b45309; font-weight: 700; }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media print {
+    .no-print { display: none !important; }
+    body { background: #fff !important; color: #000 !important; }
+  }
+</style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen">
+
+<!-- Modal de mensajes y confirmaciones sin usar alert() ni confirm() -->
+<div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4 no-print">
+  <div class="card w-full max-w-md shadow-2xl fade">
+    <div class="flex items-start gap-3">
+      <div id="modalIcon" class="mt-0.5 h-9 w-9 shrink-0 rounded-full bg-gold-100 text-gold-700 flex items-center justify-center">
+        <i data-lucide="info" class="h-5 w-5"></i>
+      </div>
+      <div class="flex-1">
+        <h3 id="modalTitle" class="font-display font-bold text-base"></h3>
+        <div id="modalBody" class="mt-1 text-sm text-slate-600 dark:text-zinc-300"></div>
+      </div>
+    </div>
+    <div id="modalActions" class="mt-5 flex justify-end gap-2"></div>
+  </div>
+</div>
+
+<!-- Contenedor principal -->
+<div class="min-h-screen flex flex-col">
+
+  <!-- Barra superior compacta segun referencia visual -->
+  <nav class="sticky top-0 z-30 border-b border-[#e9e4d8] dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 backdrop-blur px-4 sm:px-6 py-2.5 no-print">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="h-9 w-9 shrink-0 rounded-xl bg-gold-500 text-white flex items-center justify-center">
+          <i data-lucide="graduation-cap" class="h-5 w-5"></i>
+        </div>
+        <span class="font-display font-extrabold text-sm sm:text-base truncate">Asistente</span>
+      </div>
+      <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+        <button id="themeBtn" type="button" class="h-9 w-9 inline-flex items-center justify-center rounded-lg text-slate-600 dark:text-zinc-300 hover:bg-gold-50 dark:hover:bg-zinc-800" title="Modo oscuro" aria-label="Modo oscuro">
+          <i data-lucide="moon" class="h-4 w-4"></i>
+        </button>
+        <button id="resetBtn" type="button" class="h-9 w-9 inline-flex items-center justify-center rounded-lg text-slate-600 dark:text-zinc-300 hover:bg-gold-50 dark:hover:bg-zinc-800" title="Empezar de nuevo" aria-label="Empezar de nuevo">
+          <i data-lucide="rotate-ccw" class="h-4 w-4"></i>
+        </button>
+        <span class="text-xs text-slate-500 dark:text-zinc-400 whitespace-nowrap">Hecho por Mereyda Minaya Ciriaco</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Area central -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+    <header class="flex items-center gap-4 pb-4 border-b border-gold-200 dark:border-zinc-800">
+      <div class="h-14 w-14 shrink-0 rounded-full border-2 border-gold-400 bg-gold-50 dark:bg-zinc-900 flex items-center justify-center text-gold-600 dark:text-gold-300">
+        <i data-lucide="graduation-cap" class="h-7 w-7"></i>
+      </div>
+      <div class="min-w-0">
+        <h1 class="font-serif-t font-bold text-2xl sm:text-3xl leading-tight text-slate-900 dark:text-white">Asistente Generador de Proyectos</h1>
+        <p class="text-sm sm:text-base text-gold-700 dark:text-gold-300 font-medium">Escuela Profesional de Administración – UNASAM</p>
+      </div>
+    </header>
+
+    <section id="tab-formulacion" class="space-y-5">
+
+      <!-- PASO 1: ENFOQUE Y TIPO DE ESTUDIO -->
+      <div class="card">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="text-[11px] font-bold text-gold-600 tracking-widest">PASO 1</span>
+          <h2 class="font-display font-bold">Enfoque y tipo de estudio</h2>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3">
+          <div>
+            <span class="lbl">Enfoque</span>
+            <div class="seg" id="segEnfoque">
+              <button type="button" data-v="cuanti" aria-pressed="true">Cuantitativo</button>
+              <button type="button" data-v="cuali" aria-pressed="false">Cualitativo</button>
+            </div>
+          </div>
+          <div>
+            <span class="lbl">Alcance o nivel</span>
+            <div class="seg" id="segAlcance">
+              <button type="button" data-v="corr" aria-pressed="true">Correlacional</button>
+              <button type="button" data-v="expl" aria-pressed="false">Explicativo</button>
+            </div>
+          </div>
+          <div>
+            <span class="lbl">Cantidad de variables</span>
+            <div class="seg" id="segEstructura">
+              <button type="button" data-v="bi" aria-pressed="true">Bivariado (2)</button>
+              <button type="button" data-v="multi" aria-pressed="false">Multivariado (3 o más)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="workArea" class="space-y-5">
+        <!-- PASO 2: VARIABLES Y DIMENSIONES -->
+        <div class="card">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-gold-600 tracking-widest">PASO 2</span>
+              <h2 class="font-display font-bold">Variables y dimensiones</h2>
+            </div>
+            <div id="extraVarControls" class="flex flex-wrap gap-2"></div>
+          </div>
+          <div id="varsBox" class="grid gap-4 md:grid-cols-2"></div>
+        </div>
+
+        <!-- PASO 3: CONTEXTO DEL ESTUDIO -->
+        <div class="card">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-gold-600 tracking-widest">PASO 3</span>
+              <h2 class="font-display font-bold">Contexto del estudio</h2>
+            </div>
+            <span id="orgCatBadge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-gold-100 text-gold-800 dark:bg-zinc-800 dark:text-gold-200"></span>
+          </div>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div>
+              <label class="lbl" for="orgTipo">Tipo de entidad / rubro</label>
+              <select id="orgTipo" class="field">
+                <option value="auto" selected>Detección automática</option>
+                <option value="organizacion">Organización (Cat. A/B/C)</option>
+                <option value="institucion">Institución (Cat. A/B)</option>
+                <option value="rubro">Rubro / actividad</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl" for="org">Organización / institución / rubro</label>
+              <input id="org" class="field" placeholder="Ej. Hotel El Tumi / pesquería">
+            </div>
+            <div>
+              <label class="lbl" for="pob">Población / sujetos</label>
+              <input id="pob" class="field" placeholder="Ej. colaboradores">
+            </div>
+            <div>
+              <label class="lbl" for="lugar">Lugar / ciudad</label>
+              <input id="lugar" class="field" placeholder="Ej. Huaraz">
+            </div>
+            <div>
+              <label class="lbl" for="anio">Año</label>
+              <input id="anio" class="field" inputmode="numeric" maxlength="4" placeholder="Ej. 2026">
+            </div>
+          </div>
+        </div>
+
+        <!-- PASO 4: TITULO FORMULADO -->
+        <div id="titleCard" class="rounded-2xl border border-gold-400 bg-gold-100 dark:bg-[#2a241b] dark:border-gold-700 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 mb-1.5">
+                <span class="text-[11px] font-bold text-gold-700 dark:text-gold-300 tracking-widest">PASO 4</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-gold-700 dark:text-gold-300">Título de Investigación Formulado</span>
+              </div>
+              <p id="titleText" class="font-serif-t font-bold text-lg sm:text-xl leading-snug text-gold-800 dark:text-gold-100"></p>
+            </div>
+            <button id="copyTitleBtn" type="button" class="btn btn-gold shrink-0">
+              <i data-lucide="copy" class="h-4 w-4"></i>Copiar título
+            </button>
+          </div>
+        </div>
+
+        <!-- PASO 5: SELECCION DE AUTOR -->
+        <div id="authorCard" class="card">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="text-[11px] font-bold text-gold-600 tracking-widest">PASO 5</span>
+            <h2 class="font-display font-bold">Elige el autor</h2>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-zinc-400 mb-4">Al tocar un autor se generan, el problema, los objetivos y las hipótesis.</p>
+          <div id="authorsBox" class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"></div>
+        </div>
+
+        <!-- PASO 6: RESULTADOS Y EXPORTACION -->
+        <div id="resultsCard" class="card hidden fade">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] font-bold text-gold-600 tracking-widest">PASO 6</span>
+              <h2 class="font-display font-bold">Resultado</h2>
+            </div>
+            <div class="flex flex-wrap gap-2 no-print">
+              <button id="copyAllBtn" type="button" class="btn btn-gold">
+                <i data-lucide="clipboard-copy" class="h-4 w-4"></i>
+                <span>Copiar todo</span>
+              </button>
+            </div>
+          </div>
+          <div id="out" class="out"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
+
+<script>
+// =========================================================
+// 1. AUTORES METODOLOGICOS Y REFERENCIAS APA 7
+// =========================================================
+const AUTORES = {
+  vara: {
+    corto: 'Vara (2015)',
+    nombre: 'Arístides Vara Horna',
+    obra: '7 pasos para elaborar una tesis',
+    apa: 'Vara-Horna, A. A. (2015). <i>7 pasos para elaborar una tesis</i>. Empresa Editora Macro.',
+    lbl: { hi: 'Hi' },
+    ctxFullEsp: true
+  },
+  sampieri: {
+    corto: 'Hernández-Sampieri y Mendoza (2018)',
+    nombre: 'Hernández-Sampieri y Mendoza',
+    obra: 'Metodología de la investigación: Las rutas…',
+    apa: 'Hernández-Sampieri, R., y Mendoza Torres, C. P. (2018). <i>Metodología de la investigación: Las rutas cuantitativa, cualitativa y mixta</i>. McGraw-Hill Interamericana Editores.',
+    lbl: { hi: 'Hi' },
+    ctxFullEsp: false
+  },
+  villanueva: {
+    corto: 'Villanueva (2020)',
+    nombre: 'Luis A. Villanueva Benites',
+    obra: 'Diseño del proyecto e informe de investigación',
+    apa: 'Villanueva Benites, L. A. (2020). <i>Diseño del proyecto e informe de investigación: Una aplicación a las ciencias empresariales</i>. Universidad Nacional Santiago Antúnez de Mayolo.',
+    lbl: { hi: 'H1' },
+    ctxFullEsp: false
+  },
+  arias: {
+    corto: 'Arias y otros (2022)',
+    nombre: 'José Luis Arias Gonzáles y otros',
+    obra: 'Metodología de la investigación: El método ARIAS',
+    apa: 'Arias Gonzáles, J. L., Holgado Tisoc, J., Tafur Pittman, T. L., y Vasquez Pauca, M. J. (2022). <i>Metodología de la investigación: El método ARIAS para realizar un proyecto de tesis</i>. Instituto Universitario de Innovación Ciencia y Tecnología Inudi Perú. https://doi.org/10.35622/inudi.b.016',
+    lbl: { hi: 'H1' },
+    ctxFullEsp: true
+  },
+  bernal: {
+    corto: 'Bernal (2010)',
+    nombre: 'César A. Bernal',
+    obra: 'Metodología de la investigación',
+    apa: 'Bernal, C. A. (2010). <i>Metodología de la investigación: Administración, economía, humanidades y ciencias sociales</i> (3.ª ed.). Pearson Educación.',
+    lbl: { hi: 'HA' },
+    ctxFullEsp: false
+  }
+};
+
+// =========================================================
+// 2. GRAMATICA, ARTICULOS FLUIDOS Y FORMATO APA 7
+// =========================================================
+const MASC = ['sistema','problema','clima','programa','tema','día','mapa','idioma','esquema','diagrama','análisis','marketing','énfasis','estrés','liderazgo','turismo','rubro','sector'];
+const FEM = ['imagen','gestión','base','calle','gente','clase','fuente','red','salud','actitud','parte','sede','ley','crisis','tesis','percepción','mype','pyme'];
+const SIGLAS = ['IA','CRM','SPSS','MYPE','MYPES','PYME','PYMES','TIC','ERP','KPI','ROI','B2B','B2C','FODA','SGA','SIAF','OSCE','RNP','UNASAM','APA','ONG','RSE','SST','UGEL','SUNAT','SUNARP','ESSALUD','MINSA','MINEDU','MEF','INDECOPI'];
+const ARTICULOS = ['el','la','los','las'];
+
+function guessArt(name) {
+  try {
+    const w = (name || '').trim().split(/\s+/)[0].toLowerCase().replace(/^[¿¡"'«(]+|[.,;:!?"'»)]+$/g, '');
+    if (!w) return 'la';
+    // Si el estudiante ya escribio el articulo, se usa ese mismo
+    if (ARTICULOS.includes(w)) return w;
+    if (['mypes','pymes','tic','tics'].includes(w)) return 'las';
+    if (MASC.includes(w)) return 'el';
+    if (FEM.includes(w)) return 'la';
+    if (/istas$/.test(w)) return 'los';
+    if (/s$/.test(w) && !/(is|és|ás|ís|ós|ús)$/.test(w)) {
+      return /(as|dades|tudes|iones|redes)$/.test(w) ? 'las' : 'los';
+    }
+    if (/(a|ión|ón|dad|tad|tud|ud|umbre|ez|ie)$/.test(w)) return 'la';
+    return 'el';
+  } catch (_) {
+    return 'la';
+  }
+}
+
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Formato adaptativo: respeta exactamente como escribe el estudiante
+// (minusculas, mayuscula inicial, etc.). Solo normaliza a MAYUSCULAS las siglas conocidas.
+function formatVarApa(raw) {
+  const clean = String(raw || '').trim().replace(/\s+/g, ' ');
+  if (!clean) return '';
+  return clean.split(' ').map(tok => {
+    const stripped = tok.replace(/^[([{¿¡"'«]+|[)\]}.,;:!?"'»]+$/g, '');
+    if (stripped.length < 2) return tok;
+    const up = stripped.toUpperCase();
+    if (!SIGLAS.includes(up)) return tok;
+    const low = stripped.toLowerCase();
+    const capInicial = low[0].toUpperCase() + low.slice(1);
+    // "ia", "Ia" o "IA" -> "IA"; formas mixtas intencionales (p. ej. "TICs") se respetan
+    if (stripped === low || stripped === capInicial || stripped === up) return tok.replace(stripped, up);
+    return tok;
+  }).join(' ');
+}
+
+const cap = s => (!s ? s : s[0].toUpperCase() + s.slice(1));
+const PH = t => `⟦${t}⟧`;
+const plain = s => String(s).replace(/⟦([^⟧]*)⟧/g, '[$1]');
+const phHTML = s => esc(s).replace(/⟦([^⟧]*)⟧/g, '<span class="ph">[$1]</span>');
+
+// Separa un articulo inicial escrito por el usuario ("La motivación" -> la + motivación)
+function separarArticulo(txt) {
+  const s = String(txt || '').trim();
+  const m = s.match(/^(el|la|los|las)\s+(.+)$/i);
+  return m ? { art: m[1].toLowerCase(), resto: m[2] } : { art: '', resto: s };
+}
+
+function bare(o) {
+  const f = formatVarApa(o.name);
+  return f ? separarArticulo(f).resto : PH(o.ph);
+}
+
+function np(o) {
+  const f = formatVarApa(o.name);
+  if (!f) return o.art ? o.art + ' ' + PH(o.ph) : PH(o.ph);
+  const { art, resto } = separarArticulo(f);
+  const a = art || o.art;
+  return a ? a + ' ' + resto : resto;
+}
+
+// ---------------------------------------------------------
+// Union de preposiciones sin duplicaciones ni cacofonias
+// ---------------------------------------------------------
+const FORMAS_PREP = { de: ['de', 'del'], a: ['a', 'al'], en: ['en'], con: ['con'], por: ['por'], para: ['para'], sobre: ['sobre'] };
+
+function unirPrep(prep, s) {
+  const txt = String(s || '').trim();
+  if (!txt) return prep;
+  const primera = txt.split(/\s+/)[0];
+  // Si la frase ya trae la preposicion ("de la...", "del...", "en..."), no se repite
+  if ((FORMAS_PREP[prep] || [prep]).includes(primera.toLowerCase()) && primera === primera.toLowerCase()) return txt;
+  // Contracciones obligatorias solo con el articulo en minuscula ("El Comercio" es nombre propio)
+  if (primera === 'el') {
+    const resto = txt.slice(3);
+    if (prep === 'de') return 'del ' + resto;
+    if (prep === 'a') return 'al ' + resto;
+  }
+  return prep + ' ' + txt;
+}
+
+const de = s => unirPrep('de', s);
+const al = s => unirPrep('a', s);
+const enFluido = s => unirPrep('en', s);
+
+// ---------------------------------------------------------
+// Eufonia de la conjuncion copulativa: "y" -> "e" ante sonido /i/
+// ---------------------------------------------------------
+function suenaI(palabra) {
+  const raw = String(palabra || '').trim();
+  if (!raw || raw.startsWith('⟦')) return false;
+  const w = raw.replace(/^[¿¡"'«(]+/, '').split(/\s+/)[0];
+  const l = w.toLowerCase();
+  if (!/^h?[ií]/.test(l)) return false;
+  // Siglas que se leen letra por letra (IA, ISO): suenan /i/
+  if (w.length <= 5 && w === w.toUpperCase() && /[A-ZÁÉÍÓÚ]/.test(w)) return true;
+  // Diptongo inicial (hielo, hierba, hiato): se conserva "y"
+  if (/^h?i[aeoáéó]/.test(l)) return false;
+  return true;
+}
+
+const conjY = siguiente => (suenaI(siguiente) ? 'e' : 'y');
+
+function eufonia(s) {
+  return String(s).replace(/(^|[\s,;(])y(\s+)(\S+)/g, (m, pre, sp, sig) => (suenaI(sig) ? pre + 'e' + sp + sig : m));
+}
+
+// Elimina duplicaciones como "de la la", "del el", "en en", "de de" y corrige contracciones
+function limpiarCacofonia(s) {
+  const FUNC = ['de','del','en','a','al','con','por','para','el','la','los','las','y','e'];
+  let t = String(s).replace(/[ \t]{2,}/g, ' ').trim();
+  for (let k = 0; k < 3; k++) {
+    // Palabras funcionales repetidas: "de de", "en en", "la la" (si la segunda es nombre propio, se conserva esa)
+    const out = [];
+    t.split(' ').forEach(tok => {
+      const prev = out[out.length - 1];
+      if (prev && FUNC.includes(prev.toLowerCase()) && prev.toLowerCase() === tok.toLowerCase()) {
+        if (tok[0] === tok[0].toUpperCase() && prev[0] !== prev[0].toUpperCase()) out[out.length - 1] = tok;
+        return;
+      }
+      out.push(tok);
+    });
+    t = out.join(' ');
+    // "de del" -> "del" ; "a al" -> "al"
+    t = t.replace(/(^|\s)de\s+del(?=\s)/g, '$1del').replace(/(^|\s)a\s+al(?=\s)/g, '$1al');
+    // "de el" -> "del" ; "a el" -> "al" (solo articulo en minuscula)
+    t = t.replace(/(^|\s)de\s+el(?=\s)/g, '$1del').replace(/(^|\s)a\s+el(?=\s)/g, '$1al');
+    // "del el" -> "del" ; "del El Tumi" -> "de El Tumi"
+    t = t.replace(/(^|\s)(del|al)\s+(el|El)(?=\s)/g, (m, pre, c, art) => pre + (art === 'el' ? c : (c === 'del' ? 'de' : 'a') + ' El'));
+    // "del la", "del los", "al las" -> "de la", "de los", "a las"
+    t = t.replace(/(^|\s)(del|al)\s+(la|las|los|La|Las|Los)(?=\s)/g, (m, pre, c, art) => pre + (c === 'del' ? 'de' : 'a') + ' ' + art);
+  }
+  return t;
+}
+
+const pulir = s => eufonia(limpiarCacofonia(s));
+
+function lista(a) {
+  if (a.length <= 1) return a[0] || '';
+  const ult = a[a.length - 1];
+  return a.slice(0, -1).join(', ') + ' ' + conjY(ult) + ' ' + ult;
+}
+
+function isPl(o) { return o.art === 'los' || o.art === 'las'; }
+function vb(sing, plur, pl) { return pl ? plur : sing; }
+
+// =========================================================
+// 3. CLASIFICACION SINTACTICA: CAT. A, B, C Y RUBRO ADAPTATIVO
+// =========================================================
+const CAT_A_MASC = ['colegio','hospital','banco','instituto','centro','ministerio','hotel','hostal','mercado','sector','gobierno','consorcio','fondo','programa','sindicato','club','gimnasio','restaurante','almacén','almacen','bufet','estudio','comité','comite','patronato','proyecto','consejo','negocio','emprendimiento','poder','servicio','seguro','penal','juzgado','tribunal','museo','teatro','aeropuerto','puerto','terminal'];
+const CAT_B_FEM = ['universidad','municipalidad','clínica','clinica','escuela','ugel','institución','institucion','empresa','cooperativa','agencia','caja','tienda','cadena','asociación','asociacion','dirección','direccion','unidad','oficina','compañía','compania','corporación','corporacion','red','discoteca','farmacia','botica','panadería','panaderia','librería','libreria','fábrica','fabrica','planta','sociedad','fundación','fundacion','superintendencia','gerencia','subgerencia','área','area','facultad','organización','organizacion','posta','micro red','policía','policia','fiscalía','fiscalia','notaría','notaria','beneficencia','parroquia','iglesia'];
+const GENERICOS = ['empresa','negocio','organización','organizacion','emprendimiento'];
+const RUBROS_COMUNES = ['turismo','hotelería','hoteleria','gastronomía','gastronomia','comercio','minería','mineria','agricultura','construcción','construccion','transporte','educación','educacion','salud','manufactura','textil','chocolatería','chocolateria','servicios','finanzas','banca','retail','mypes','pymes','pesquería','pesqueria','pesca','ganadería','ganaderia','agroindustria','acuicultura','artesanía','artesania','logística','logistica','telecomunicaciones','seguros'];
+const SIGLAS_ENT = ['UGEL','SUNAT','SUNARP','ESSALUD','MINSA','MINEDU','MEF','INDECOPI','OSCE','RNP','UNASAM'];
+const SIGLAS_ENT_MASC = ['MINSA','MINEDU','MEF','INDECOPI','OSCE','RNP'];
+
+// Adjetivos de rubro ("rubro pesquero", "sector textil", "actividad comercial"): no llevan "de la"
+const ADJ_MASC = /^[a-záéíóúñ]+(ero|eros|ario|arios|ivo|ivos|al|ales|il|iles|ico|icos)$/;
+const ADJ_FEM = /^[a-záéíóúñ]+(era|eras|aria|arias|iva|ivas|al|ales|il|iles|ica|icas)$/;
+const ADJ_EXCEPCIONES = ['acero','cuero','dinero','sombrero','plástico','plastico','vivero','crucero','metal','capital','canal','hospital','portal','material','personal','química','quimica','música','musica','informática','informatica','mecánica','mecanica','cerámica','ceramica','era','madera','carrera','cartera','frontera','ganadera'];
+
+const RUBRO_PISTAS = [
+  { re: /\b(chocolatería|chocolateria|chocolate|chocolates|dulce|dulces|bombonería|bomboneria|postre|postres|panadería|panaderia|café|cafe|cafetería|cafeteria|helado|helados|donofrio|ibérica|iberica)\b/i, art: 'la', desc: 'empresa' },
+  { re: /\b(restaurante|cevichería|cevicheria|pollería|polleria|picantería|picanteria|chifa|bistró|bistro|fogón|fogon|sabor|cocina|gastronomía|gastronomia|comedor)\b/i, art: 'el', desc: 'restaurante' },
+  { re: /\b(minera|minería|mineria|mina|yacimiento|cantera|fundición|fundicion|metalúrgica|metalurgica|antamina|barrick|buenaventura|volcan|southern)\b/i, art: 'la', desc: 'minera' },
+  { re: /\b(ropa|moda|calzado|zapatillas|deporte|deportivo|nike|adidas|puma|reebok|zara|boutique|bazar|ferretería|ferreteria|botica|farmacia|minimarket|bodega|tienda)\b/i, art: 'la', desc: 'tienda' },
+  { re: /\b(hotel|hostal|hospedaje|resort|lodge|tumi)\b/i, art: 'el', desc: 'hotel' },
+  { re: /\b(turismo|viajes|tour|tours|agencia de viajes|expediciones)\b/i, art: 'la', desc: 'agencia' }
+];
+
+const MENORES = ['de','del','la','las','el','los','y','e','en','a','al','para','por','con'];
+const PREPS = ['de','del','en','a','al','para','por','con'];
+
+// Nombre propio de una entidad: mayuscula inicial en palabras plenas, siglas en mayuscula,
+// y los sustantivos genericos ("empresa", "negocio") se dejan tal como los escribio el usuario
+function propio(s) {
+  const w = String(s || '').trim().split(/\s+/).filter(Boolean);
+  return w.map((x, i) => {
+    const l = x.toLowerCase();
+    const limpio = x.replace(/[.,;:]+$/, '');
+    if (SIGLAS_ENT.includes(limpio.toUpperCase()) || SIGLAS.includes(limpio.toUpperCase())) return x.toUpperCase();
+    if (GENERICOS.includes(l)) return x;
+    if (i > 0 && MENORES.includes(l) && !(['el','la','los','las'].includes(l) && !PREPS.includes(w[i - 1].toLowerCase()))) return l;
+    return x[0].toUpperCase() + x.slice(1);
+  }).join(' ');
+}
+
+function esNucleoEntidad(palabra) {
+  const p = String(palabra || '').replace(/[.,;:]+$/, '');
+  const l = p.toLowerCase();
+  return CAT_A_MASC.includes(l) || CAT_B_FEM.includes(l) || GENERICOS.includes(l) ||
+    SIGLAS_ENT.includes(p.toUpperCase()) || /^(rubro|sector|actividad)$/.test(l);
+}
+
+// Quita preposiciones iniciales escritas por el usuario y el articulo que precede a un sustantivo
+// generico ("la Universidad..." -> "Universidad..."), pero conserva el articulo que forma parte
+// de una marca ("La Ibérica", "El Tumi")
+function limpiarEntidad(raw) {
+  let s = String(raw || '').trim().replace(/\s+/g, ' ');
+  s = s.replace(/^(de la|de las|de los|del|de|en el|en la|en los|en las|en)\s+/, '');
+  const m = s.match(/^(el|la|los|las)\s+(\S+)/i);
+  if (m && esNucleoEntidad(m[2])) s = s.slice(m[1].length).trim();
+  return s.trim();
+}
+
+function esRubroExplicito(raw, tipoSel) {
+  if (tipoSel === 'rubro') return true;
+  if (tipoSel === 'institucion' || tipoSel === 'organizacion') return false;
+  const limpio = limpiarEntidad(raw);
+  if (!limpio) return false;
+  const nucleo = separarArticulo(limpio).resto;
+  const first = nucleo.split(/\s+/)[0].toLowerCase().replace(/[.,;:]+$/, '');
+  if (/^(rubro|sector|actividad)$/.test(first)) return true;
+  if (esNucleoEntidad(first)) return false;
+  if (RUBROS_COMUNES.includes(nucleo.toLowerCase())) return true;
+  // Escrito todo en minusculas: no es un nombre propio, se interpreta como rubro / actividad
+  if (nucleo === nucleo.toLowerCase() && /[a-záéíóúñ]/.test(nucleo)) return true;
+  return false;
+}
+
+// Rubro adaptativo: "pesquería" -> "en el rubro de la pesquería"; "sector textil" -> "en el sector textil"
+function fraseRubro(limpio) {
+  let t = formatVarApa(limpio);
+  let cab = 'rubro';
+  const m = t.match(/^(rubro|sector|actividad)(?:\s+(.*))?$/i);
+  if (m) {
+    cab = m[1].toLowerCase();
+    t = (m[2] || '').trim();
+  }
+  const artCab = cab === 'actividad' ? 'la' : 'el';
+  let comp;
+  if (!t) {
+    comp = 'de ' + PH('rubro');
+  } else if (/^(de|del)\s/i.test(t)) {
+    comp = t.replace(/^(de|del)\s/i, x => x.toLowerCase());
+  } else {
+    const { art, resto } = separarArticulo(t);
+    const first = resto.split(/\s+/)[0].toLowerCase();
+    const reAdj = cab === 'actividad' ? ADJ_FEM : ADJ_MASC;
+    if (!art && reAdj.test(first) && !ADJ_EXCEPCIONES.includes(first)) comp = resto;
+    else comp = unirPrep('de', (art || guessArt(resto)) + ' ' + resto);
+  }
+  const nucleo = `${cab} ${comp}`;
+  return { en: `en ${artCab} ${nucleo}`, con: `con ${artCab} ${nucleo}`, bare: `${artCab} ${nucleo}` };
+}
+
+function frasesEntidad(art, nombre) {
+  const base = art ? `${art} ${nombre}` : nombre;
+  return { pert: unirPrep('de', base), obj: unirPrep('con', base), bare: base };
+}
+
+function analizarOrganizacion(raw) {
+  const tipoSel = (document.getElementById('orgTipo')?.value) || 'auto';
+  const limpio = limpiarEntidad(raw);
+  if (!limpio) {
+    return {
+      cat: 'C',
+      etiqueta: 'Sin especificar',
+      prefPertenencia: 'de la empresa ' + PH('organización'),
+      prefObjeto: 'con la empresa ' + PH('organización'),
+      barePhrase: 'la empresa ' + PH('organización')
+    };
+  }
+
+  // Rubro: respeta la escritura del usuario y se enlaza con "en el rubro de la..." / "en el sector de la..."
+  if (esRubroExplicito(raw, tipoSel)) {
+    const r = fraseRubro(limpio);
+    return { cat: 'RUBRO', etiqueta: 'Rubro / actividad', prefPertenencia: r.en, prefObjeto: r.con, barePhrase: r.bare };
+  }
+
+  const firstRaw = limpio.split(/\s+/)[0];
+  const firstLow = firstRaw.toLowerCase().replace(/[.,;:]+$/, '');
+  const firstUp = firstRaw.toUpperCase().replace(/[.,;:]+$/, '');
+  const esInst = tipoSel === 'institucion';
+  const etq = masc => esInst
+    ? (masc ? 'Institución masculina (Cat. A)' : 'Institución femenina (Cat. B)')
+    : (masc ? 'Categoría A (Masculina)' : 'Categoría B (Femenina)');
+  const salida = (cat, etiqueta, f) => ({ cat, etiqueta, prefPertenencia: f.pert, prefObjeto: f.obj, barePhrase: f.bare });
+
+  // Siglas institucionales: "de la UGEL...", "del MINSA..."
+  if (SIGLAS_ENT.includes(firstUp)) {
+    const masc = SIGLAS_ENT_MASC.includes(firstUp);
+    return salida(masc ? 'A' : 'B', etq(masc), frasesEntidad(masc ? 'el' : 'la', propio(limpio)));
+  }
+
+  // Categoria A: sustantivo masculino ("del Hotel...", "del Instituto...", "del Hospital...")
+  if (CAT_A_MASC.includes(firstLow)) return salida('A', etq(true), frasesEntidad('el', propio(limpio)));
+
+  // Categoria B: sustantivo femenino ("de la Universidad...", "de la Clínica...")
+  if (CAT_B_FEM.includes(firstLow)) return salida('B', etq(false), frasesEntidad('la', propio(limpio)));
+
+  // Institucion con sustantivo no listado: se detecta el genero/numero del sustantivo inicial
+  if (esInst) {
+    const { art, resto } = separarArticulo(limpio);
+    const a = art || guessArt(resto);
+    const masc = a === 'el' || a === 'los';
+    return salida(masc ? 'A' : 'B', etq(masc), frasesEntidad(a, propio(resto)));
+  }
+
+  // Categoria C: marca comercial sin sustantivo. Solo se agrega un descriptor ("la empresa",
+  // "el restaurante"...) cuando hace falta para la coherencia de la frase.
+  const nomMarca = propio(limpio);
+  const tieneArt = /^(El|La|Los|Las)\s/.test(nomMarca);
+  const ctxTexto = `${limpio} ${(document.getElementById('pob')?.value || '')} ${(document.getElementById('lugar')?.value || '')}`;
+  const pista = RUBRO_PISTAS.find(p => p.re.test(ctxTexto));
+  let f;
+  if (pista) f = frasesEntidad(pista.art, `${pista.desc} ${nomMarca}`);
+  else if (tieneArt) f = frasesEntidad('la', `empresa ${nomMarca}`);
+  else f = frasesEntidad('', nomMarca);
+  return salida('C', 'Categoría C (Organización / Marca)', f);
+}
+
+function partic(o) {
+  return { el: 'determinado', la: 'determinada', los: 'determinados', las: 'determinadas' }[o.art] || 'determinado';
+}
+
+// =========================================================
+// 4. ESTADO DE LA APLICACION
+// =========================================================
+let S;
+function nuevaVar(ph) { return { name: '', art: 'la', auto: true, ph, dims: [nuevaDim(1)] }; }
+function nuevaDim(n) { return { name: '', art: 'la', auto: true, ph: 'dimensión ' + n }; }
+
+function estadoInicial() {
+  return {
+    enfoque: 'cuanti',
+    alcance: 'corr',
+    estructura: 'bi',
+    dir: 'pos',
+    mediadora: false,
+    verboTit: 'Influencia',
+    verboMulti: 'inciden',
+    preds: [nuevaVar('variable 1')],
+    target: nuevaVar('variable 2'),
+    med: nuevaVar('variable mediadora'),
+    autor: null,
+    R: null
+  };
+}
+
+S = estadoInicial();
+const $ = id => document.getElementById(id);
+
+function rolPred(i) {
+  if (S.alcance === 'corr') return 'Variable ' + (i + 1);
+  return S.estructura === 'bi' ? 'Variable independiente' : 'Variable independiente ' + (i + 1);
+}
+
+function rolTarget() {
+  if (S.alcance === 'corr') return S.estructura === 'bi' ? 'Variable 2' : 'Variable principal';
+  return 'Variable dependiente';
+}
+
+function phPred(i) { return rolPred(i).toLowerCase(); }
+function phTarget() { return rolTarget().toLowerCase(); }
+function usaMed() { return S.alcance === 'expl' && S.estructura === 'multi' && S.mediadora; }
+
+function todasVars() {
+  const v = S.preds.map((p, i) => ({ v: p, key: 'p' + i, rol: rolPred(i) }));
+  if (usaMed()) v.push({ v: S.med, key: 'm', rol: 'Variable mediadora' });
+  v.push({ v: S.target, key: 't', rol: rolTarget() });
+  return v;
+}
+
+function getVar(key) {
+  if (key === 't') return S.target;
+  if (key === 'm') return S.med;
+  return S.preds[+key.slice(1)];
+}
+
+// =========================================================
+// 5. RENDERIZADO DINAMICO DE VARIABLES Y DIMENSIONES
+// =========================================================
+function renderVars() {
+  S.preds.forEach((p, i) => { p.ph = phPred(i); });
+  S.target.ph = phTarget();
+  let ctrls = '';
+  if (S.estructura === 'multi') {
+    ctrls += `<button type="button" class="btn btn-ghost !py-1.5 !text-xs" data-act="addVar"><i data-lucide="plus" class="h-3.5 w-3.5"></i>Agregar variable</button>`;
+  }
+  if (S.alcance === 'expl' && S.estructura === 'multi') {
+    ctrls += `<label class="btn btn-ghost !py-1.5 !text-xs cursor-pointer"><input type="checkbox" id="medChk" ${S.mediadora ? 'checked' : ''} class="accent-[#b8893b]"> Incluir variable mediadora</label>`;
+  }
+  $('extraVarControls').innerHTML = ctrls;
+  $('varsBox').innerHTML = todasVars().map(({ v, key, rol }) => varCard(v, key, rol)).join('');
+  icons();
+  refresh();
+}
+
+function varCard(v, key, rol) {
+  const removable = S.estructura === 'multi' && key.startsWith('p') && S.preds.length > 2;
+  return `
+    <div class="rounded-xl border border-[#e9e4d8] dark:border-zinc-800 bg-gold-50/60 dark:bg-zinc-900 p-4 space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-gold-700 dark:text-gold-300">${esc(rol)}</span>
+        ${removable ? `<button type="button" data-act="delVar" data-k="${key}" class="text-slate-400 hover:text-red-600" title="Quitar variable"><i data-lucide="trash-2" class="h-4 w-4"></i></button>` : ''}
+      </div>
+      <input id="var-${key}" class="field font-semibold" data-k="${key}" data-f="name" value="${esc(v.name)}" placeholder="Nombre de la ${esc(v.ph)}">
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-medium text-slate-500 dark:text-zinc-400">Dimensiones</span>
+          <button type="button" data-act="addDim" data-k="${key}" class="text-xs font-semibold text-gold-700 dark:text-gold-300 inline-flex items-center gap-1">
+            <i data-lucide="plus" class="h-3.5 w-3.5"></i>Agregar dimensión
+          </button>
+        </div>
+        ${v.dims.map((d, i) => `
+          <div class="rounded-lg bg-white dark:bg-zinc-950 border border-[#efe9dc] dark:border-zinc-800 p-2">
+            <div class="flex gap-2 items-center">
+              <span class="text-[11px] font-bold text-gold-600 w-6">D${i + 1}</span>
+              <input id="dim-${key}-${i}" class="field !py-1 !text-xs" data-k="${key}" data-d="${i}" data-f="name" value="${esc(d.name)}" placeholder="Dimensión ${i + 1}">
+              ${v.dims.length > 1 ? `<button type="button" data-act="delDim" data-k="${key}" data-d="${i}" class="h-8 w-8 shrink-0 inline-flex items-center justify-center rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40" title="Eliminar dimensión"><i data-lucide="trash-2" class="h-4 w-4"></i></button>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+// =========================================================
+// 6. CONTEXTO, FORMULACION DEL TITULO Y VALIDACION
+// =========================================================
+function ctxObj() {
+  const orgInfo = analizarOrganizacion($('org').value);
+  // Se quitan preposiciones iniciales escritas por error ("de los socios" -> "los socios")
+  const pobRaw = formatVarApa($('pob').value).replace(/^((de|del|en|a|al)\s+)+/i, '');
+  const pob = { name: pobRaw, art: guessArt(pobRaw), ph: 'población' };
+  const pobS = np(pob);
+  const link = orgInfo.prefPertenencia;
+  const objLink = orgInfo.prefObjeto;
+  const lugar = propio($('lugar').value) || PH('lugar');
+  const anio = $('anio').value.trim() || PH('año');
+  return {
+    pobS,
+    link,
+    objLink,
+    orgInfo,
+    lugar,
+    anio,
+    full: pre => `${pre === 'en' ? enFluido(pobS) : de(pobS)} ${link}, ${lugar}, ${anio}`,
+    short: pre => `${pre === 'en' ? enFluido(pobS) : de(pobS)} ${link}`
+  };
+}
+
+function construirTitulo() {
+  const c = ctxObj();
+  const P = S.preds.map(np);
+  const T = np(S.target);
+  const cola = S.alcance === 'expl'
+    ? ` ${de(c.pobS)} ${c.link}, ${c.lugar}, ${c.anio}`
+    : ` ${enFluido(c.pobS)} ${c.link}, ${c.lugar}, ${c.anio}`;
+  let t;
+  if (S.alcance === 'corr') {
+    t = S.estructura === 'bi' ? `Relación entre ${P[0]} ${conjY(T)} ${T}` : `Relación entre ${lista(P)} con ${T}`;
+  } else if (S.estructura === 'bi') {
+    t = `${S.verboTit} ${de(P[0])} ${enFluido(T)}`;
+  } else if (usaMed()) {
+    t = `${cap(np(S.med))} como variable mediadora entre ${lista(P)} y ${T}`;
+  } else {
+    t = `Factores ${de(lista(P))} que ${S.verboMulti} ${S.verboMulti === 'determinan' ? '' : 'en '}${T}`;
+  }
+  return cap(pulir(t + cola)).replace(/[.\s]+$/, '');
+}
+
+function camposRequeridos() {
+  const req = [];
+  todasVars().forEach(({ v, key, rol }) => {
+    req.push({ id: 'var-' + key, ok: !!v.name.trim(), msg: 'Nombre de: ' + rol });
+    v.dims.forEach((d, i) => req.push({ id: `dim-${key}-${i}`, ok: !!d.name.trim(), msg: `Dimensión ${i + 1} de: ${v.name.trim() || rol}` }));
+  });
+  req.push({ id: 'org', ok: !!$('org').value.trim(), msg: 'Organización / institución / rubro' });
+  req.push({ id: 'pob', ok: !!$('pob').value.trim(), msg: 'Población / sujetos' });
+  req.push({ id: 'lugar', ok: !!$('lugar').value.trim(), msg: 'Lugar / ciudad' });
+  req.push({ id: 'anio', ok: /^\d{4}$/.test($('anio').value.trim()), msg: 'Año (4 dígitos)' });
+  return req;
+}
+
+function validar() {
+  if (S.enfoque !== 'cuanti') {
+    modal('Enfoque no disponible', 'El estudio cualitativo no puede generarse con esta herramienta. Elige «Cuantitativo».', 'alert');
+    return false;
+  }
+  document.querySelectorAll('.field.invalid').forEach(e => e.classList.remove('invalid'));
+  const falt = camposRequeridos().filter(r => !r.ok);
+  if (!falt.length) return true;
+  falt.forEach(f => {
+    const el = $(f.id);
+    if (el) el.classList.add('invalid');
+  });
+  const first = $(falt[0].id);
+  if (first) {
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => first.focus(), 350);
+  }
+  modal(
+    'Faltan datos por completar',
+    `<p class="mb-2">Completa los campos marcados en rojo:</p><ul class="list-disc pl-5 space-y-0.5">${falt.slice(0, 10).map(f => `<li>${esc(f.msg)}</li>`).join('')}${falt.length > 10 ? `<li>y ${falt.length - 10} más…</li>` : ''}</ul><p class="mt-2 text-xs">Si no usarás una dimensión, quítala con el botón de eliminar.</p>`,
+    'alert'
+  );
+  return false;
+}
+
+// =========================================================
+// 7. GENERADOR DE PROBLEMAS, OBJETIVOS E HIPOTESIS
+// =========================================================
+function unidades() {
+  const T = S.target, U = [];
+  if (usaMed()) return U;
+  if (S.estructura === 'bi') S.preds[0].dims.forEach(d => U.push([d, T]));
+  else S.preds.forEach(p => U.push([p, T]));
+  return U;
+}
+
+function generar(autor) {
+  const A = AUTORES[autor], pos = S.dir === 'pos', c = ctxObj();
+  const pre = autor === 'sampieri' ? 'en' : 'de';
+  const CF = c.full(pre), CE = A.ctxFullEsp ? c.full(pre) : c.short(pre);
+  const P = S.preds, T = S.target, Tn = np(T);
+  const subj = S.estructura === 'bi' ? np(P[0]) : lista(P.map(np));
+  const subjPl = S.estructura === 'multi' || isPl(P[0]);
+  const subjBare = S.estructura === 'bi' ? bare(P[0]) : lista(P.map(bare));
+  const R = { pg: '', pe: [], og: '', oe: [], hg: '', he: [] };
+  const rot = (arr, i) => arr[i % arr.length];
+  const U = unidades();
+
+  if (S.alcance === 'corr') {
+    const multiG = S.estructura === 'multi';
+    if (autor === 'vara') {
+      R.pg = multiG ? `¿Cuál es la relación entre ${lista(P.map(np).concat([Tn]))} ${CF}?` : `¿Existe relación entre ${subj} y ${Tn} ${CF}?`;
+      R.og = multiG ? `Determinar la relación entre ${lista(P.map(np).concat([Tn]))} ${CF}.` : `Determinar la relación entre ${subj} y ${Tn} ${CF}.`;
+      R.hg = multiG
+        ? `${cap(Tn)} ${CF} está asociad${isPl(T) ? (T.art === 'las' ? 'as' : 'os') : (T.art === 'la' ? 'a' : 'o')} ${pos ? 'directamente' : 'inversamente'} con ${subj}.`
+        : `Existe relación ${pos ? 'directa' : 'inversa'} entre ${subj} y ${Tn} ${CF}.`;
+      U.forEach(([a, b]) => {
+        R.pe.push(`¿Existe relación entre ${np(a)} y ${np(b)} ${CE}?`);
+        R.oe.push(`Determinar la relación entre ${np(a)} y ${np(b)} ${CE}.`);
+        R.he.push(`Existe relación ${pos ? 'directa' : 'inversa'} entre ${np(a)} y ${np(b)} ${CE}.`);
+      });
+    }
+    if (autor === 'sampieri') {
+      R.pg = `¿Habrá una relación entre ${subj} y ${Tn} ${CF}?`;
+      R.og = `Determinar la relación entre ${subj} y ${Tn} ${CF}.`;
+      R.hg = multiG ? `${cap(subj)} se relacionan con ${Tn} ${CF}.` : `A mayor ${subjBare}, ${pos ? 'mayor' : 'menor'} ${bare(T)} ${CF}.`;
+      U.forEach(([a, b]) => {
+        R.pe.push(`¿Habrá una relación entre ${np(a)} y ${np(b)} ${CE}?`);
+        R.oe.push(`Determinar la relación entre ${np(a)} y ${np(b)} ${CE}.`);
+        R.he.push(`A mayor ${bare(a)}, ${pos ? 'mayor' : 'menor'} ${bare(b)} ${CE}.`);
+      });
+    }
+    if (autor === 'villanueva') {
+      const F = {
+        como: (a, b, ctx, pl) => `¿Cómo ${vb('se relaciona', 'se relacionan', pl)} ${a} con ${b} ${ctx}?`,
+        que: (a, b, ctx) => `¿Qué relación existe entre ${a} y ${b} ${ctx}?`,
+        cual: (a, b, ctx) => `¿Cuál es la relación que se da entre ${a} y ${b} ${ctx}?`,
+        vincula: (a, b, ctx, pl) => `¿Cómo ${vb('se vincula', 'se vinculan', pl)} ${a} con ${b} ${ctx}?`
+      };
+      const O = {
+        como: (a, b, ctx) => `Determinar la relación ${de(a)} con ${b} ${ctx}.`,
+        que: (a, b, ctx) => `Establecer la relación entre ${a} y ${b} ${ctx}.`,
+        cual: (a, b, ctx) => `Determinar la relación entre ${a} y ${b} ${ctx}.`,
+        vincula: (a, b, ctx) => `Establecer la vinculación entre ${a} y ${b} ${ctx}.`
+      };
+      const rel = pos ? 'positiva' : 'negativa';
+      const adv = pos ? 'positivamente' : 'negativamente';
+      R.pg = F.como(subj, Tn, CF, subjPl);
+      R.og = O.como(subj, Tn, CF);
+      R.hg = `Existe una relación ${rel} entre ${subj} y ${Tn} ${CF}.`;
+      const cyc = ['como', 'que', 'vincula', 'cual'];
+      U.forEach(([a, b], i) => {
+        const k = rot(cyc, i);
+        R.pe.push(F[k](np(a), np(b), CE, isPl(a)));
+        R.oe.push(O[k](np(a), np(b), CE));
+        R.he.push(rot([
+          `Hay una relación ${rel} entre ${np(a)} y ${np(b)} ${CE}.`,
+          `Existe una relación ${rel} entre ${np(a)} y ${np(b)} ${CE}.`,
+          `${cap(np(a))} y ${np(b)} ${CE} se relacionan ${adv}.`
+        ], i));
+      });
+    }
+    if (autor === 'arias') {
+      R.pg = `¿Cuál es la relación entre ${subj} y ${Tn} ${CF}?`;
+      R.og = `Establecer la relación entre ${subj} y ${Tn} ${CF}.`;
+      R.hg = `Existe relación significativa entre ${subj} y ${Tn} ${CF}.`;
+      U.forEach(([a, b], i) => {
+        R.pe.push(`¿Cuál es la relación entre ${np(a)} y ${np(b)} ${CE}?`);
+        R.oe.push(`${rot(['Precisar', 'Establecer', 'Determinar', 'Definir'], i)} la relación entre ${np(a)} y ${np(b)} ${CE}.`);
+        R.he.push(`Existe relación significativa entre ${np(a)} y ${np(b)} ${CE}.`);
+      });
+    }
+    if (autor === 'bernal') {
+      R.pg = `¿Hay relación entre ${subj} y ${Tn} ${CF}?`;
+      R.og = `Analizar la relación entre ${subj} y ${Tn} ${CF}.`;
+      R.hg = `Existe relación significativa entre ${subj} y ${Tn} ${CF}.`;
+      U.forEach(([a, b], i) => {
+        R.pe.push(`¿Hay relación entre ${np(a)} y ${np(b)} ${CE}?`);
+        R.oe.push(`${rot(['Evaluar', 'Identificar', 'Analizar'], i)} la relación entre ${np(a)} y ${np(b)} ${CE}.`);
+        R.he.push(`Existe relación significativa entre ${np(a)} y ${np(b)} ${CE}.`);
+      });
+    }
+  } else {
+    const Tb = T;
+    if (usaMed()) {
+      const M = np(S.med), Mpl = isPl(S.med);
+      R.pg = `¿De qué manera ${M} media la influencia ${de(subj)} ${enFluido(Tn)} ${CF}?`;
+      R.og = `Determinar el efecto mediador ${de(M)} en la influencia ${de(subj)} ${enFluido(Tn)} ${CF}.`;
+      R.hg = `${cap(M)} ${vb('media', 'median', Mpl)} la influencia ${de(subj)} ${enFluido(Tn)} ${CF}.`;
+      const pares = P.map(p => [p, S.med]).concat([[S.med, Tb]]);
+      pares.forEach(([a, b]) => {
+        const t = explPar(autor, a, b, CE, pos);
+        R.pe.push(t.q);
+        R.oe.push(t.o);
+        R.he.push(t.h);
+      });
+      R.pe.push(`¿De qué manera ${M} media la influencia ${de(subj)} ${enFluido(Tn)} ${CE}?`);
+      R.oe.push(`Determinar el efecto mediador ${de(M)} en la influencia ${de(subj)} ${enFluido(Tn)} ${CE}.`);
+      R.he.push(`${cap(M)} ${vb('media', 'median', Mpl)} la influencia ${de(subj)} ${enFluido(Tn)} ${CE}.`);
+    } else {
+      const g = explPar(autor, { ...P[0], name: '__LIST__' }, Tb, CF, pos, { subj, subjPl });
+      R.pg = g.q;
+      R.og = g.o;
+      R.hg = g.h;
+      U.forEach(([a, b], i) => {
+        const t = explPar(autor, a, b, CE, pos, null, i);
+        R.pe.push(t.q);
+        R.oe.push(t.o);
+        R.he.push(t.h);
+      });
+    }
+  }
+  // Pulido final: sin duplicaciones cacofonicas y con eufonia "y" -> "e"
+  ['pg', 'og', 'hg'].forEach(k => { R[k] = pulir(R[k]); });
+  ['pe', 'oe', 'he'].forEach(k => { R[k] = R[k].map(pulir); });
+  return R;
+}
+
+function explPar(autor, a, b, C, pos, gen, i = 0) {
+  const x = gen ? gen.subj : np(a);
+  const pl = gen ? gen.subjPl : isPl(a);
+  const y = np(b);
+  const r = {};
+  if (autor === 'vara') {
+    r.q = `¿Cuál es la influencia ${de(x)} ${enFluido(y)} ${C}?`;
+    r.o = `Determinar la influencia ${de(x)} ${enFluido(y)} ${C}.`;
+    r.h = `${cap(x)} ${vb('influye', 'influyen', pl)} ${pos ? 'directamente' : 'negativamente'} ${enFluido(y)} ${C}.`;
+  }
+  if (autor === 'sampieri') {
+    r.q = `¿${cap(x)} ${vb('tendrá', 'tendrán', pl)} un efecto sobre ${y} ${C}?`;
+    r.o = `Determinar el impacto ${de(x)} sobre ${y} ${C}.`;
+    r.h = `${cap(x)} ${vb('genera', 'generan', pl)} un efecto ${pos ? 'positivo' : 'negativo'} ${enFluido(y)} ${C}.`;
+  }
+  if (autor === 'villanueva') {
+    const k = gen ? 'manera' : ['como', 'grado', 'efectos', 'manera'][i % 4];
+    const Q = {
+      manera: `¿De qué manera ${vb('influye', 'influyen', pl)} ${x} ${enFluido(y)} ${C}?`,
+      como: `¿Cómo ${vb('influye', 'influyen', pl)} ${x} ${enFluido(y)} ${C}?`,
+      grado: `¿En qué grado ${vb('favorece', 'favorecen', pl)} ${x} ${al(y)} ${C}?`,
+      efectos: `¿Qué efectos ${vb('produce', 'producen', pl)} ${x} ${enFluido(y)} ${C}?`
+    };
+    const O = {
+      manera: `Explicar la influencia ${de(x)} ${enFluido(y)} ${C}.`,
+      como: `Analizar la influencia ${de(x)} ${enFluido(y)} ${C}.`,
+      grado: `Establecer el grado en que ${x} ${vb('favorece', 'favorecen', pl)} ${al(y)} ${C}.`,
+      efectos: `Explicar los efectos ${de(x)} ${enFluido(y)} ${C}.`
+    };
+    r.q = Q[k];
+    r.o = O[k];
+    r.h = `${cap(x)} ${vb('incide', 'inciden', pl)} ${pos ? 'positivamente' : 'negativamente'} ${enFluido(y)} ${C}.`;
+  }
+  if (autor === 'arias') {
+    r.q = `¿En qué medida ${x} ${vb('influye', 'influyen', pl)} ${enFluido(y)} ${C}?`;
+    r.o = gen ? `Determinar la influencia ${de(x)} ${enFluido(y)} ${C}.` : `${['Evaluar', 'Verificar', 'Explicar', 'Demostrar'][i % 4]} la influencia ${de(x)} ${enFluido(y)} ${C}.`;
+    const ef = pos ? 'un incremento significativo' : 'una disminución significativa';
+    r.h = `${cap(x)} ${vb('causa', 'causan', pl)} ${ef} ${enFluido(y)} ${C}.`;
+  }
+  if (autor === 'bernal') {
+    r.q = `¿Cuál es el impacto ${de(x)} ${enFluido(y)} ${C}?`;
+    r.o = gen ? `Evaluar el impacto ${de(x)} ${enFluido(y)} ${C}.` : `${['Evaluar el impacto', 'Analizar el efecto', 'Determinar el efecto'][i % 3]} ${de(x)} ${enFluido(y)} ${C}.`;
+    const Cen = C.replace(/^del /, 'en el ').replace(/^de /, 'en ');
+    r.h = `${cap(Cen)}, ${y} está ${partic(b)} por ${x}.`;
+  }
+  return r;
+}
+
+// =========================================================
+// 8. SALIDA, EXPORTACION Y PORTAPAPELES
+// =========================================================
+function bloques() {
+  const R = S.R, A = AUTORES[S.autor], L = A.lbl, B = [];
+  B.push({ t: 'h', x: 'Problema general' });
+  B.push({ t: 'p', x: R.pg });
+  B.push({ t: 'h', x: 'Problemas específicos' });
+  B.push({ t: 'ol', x: R.pe.map((s, i) => `PE${i + 1}: ${s}`) });
+  B.push({ t: 'h', x: 'Objetivo general' });
+  B.push({ t: 'p', x: R.og });
+  B.push({ t: 'h', x: 'Objetivos específicos' });
+  B.push({ t: 'ol', x: R.oe.map((s, i) => `OE${i + 1}: ${s}`) });
+  B.push({ t: 'h', x: 'Hipótesis general' });
+  B.push({ t: 'p', x: `${L.hi}: ${R.hg}` });
+  B.push({ t: 'h', x: 'Hipótesis específicas' });
+  B.push({ t: 'ol', x: R.he.map((s, i) => `HE${i + 1}: ${s}`) });
+  B.push({ t: 'ref', x: A.apa });
+  return B;
+}
+
+function renderOut() {
+  const B = bloques();
+  let h = '';
+  B.forEach(b => {
+    if (b.t === 'h') h += `<h4>${esc(b.x)}</h4>`;
+    if (b.t === 'p') h += `<p>${phHTML(b.x)}</p>`;
+    if (b.t === 'ol') {
+      h += b.x.length
+        ? `<ol>${b.x.map(s => `<li>${phHTML(s)}</li>`).join('')}</ol>`
+        : `<p class="text-sm text-amber-700">Agrega dimensiones o variables para generar los específicos.</p>`;
+    }
+    if (b.t === 'ref') h += `<div class="mt-4 pt-3 border-t border-[#e9e4d8] dark:border-zinc-800"><p style="padding-left:1.27cm;text-indent:-1.27cm">${b.x}</p></div>`;
+  });
+  h += `
+    <div class="mt-6 rounded-xl border border-gold-300 dark:border-gold-700 bg-gold-50 dark:bg-[#2a241b] p-4 text-center font-sans">
+      <p class="font-display font-bold text-base sm:text-lg text-gold-700 dark:text-gold-200">¡Felicitaciones! El camino hacia tu éxito profesional está listo para despegar. ¡Gran trabajo! 🎓</p>
+    </div>
+  `;
+  $('out').innerHTML = h;
+}
+
+const TNR = "font-family:'Times New Roman',serif;font-size:12pt;line-height:1.5";
+
+function htmlCopia() {
+  let h = `<div style="${TNR};font-weight:normal">`;
+  bloques().forEach(b => {
+    const x = esc(plain(b.x || ''));
+    if (b.t === 'h') h += `<p style="${TNR};font-weight:bold;margin-top:12pt">${x}</p>`;
+    if (b.t === 'p') h += `<p style="${TNR};text-align:justify">${x}</p>`;
+    if (b.t === 'ol') h += b.x.map(s => `<p style="${TNR};text-align:justify;margin-left:18pt">${esc(plain(s))}</p>`).join('');
+    if (b.t === 'ref') h += `<p style="${TNR};padding-left:36pt;text-indent:-36pt;margin-top:12pt">${b.x}</p>`;
+  });
+  return h + '</div>';
+}
+
+function textoCopia() {
+  let t = '';
+  bloques().forEach(b => {
+    if (b.t === 'h') t += '\n' + b.x.toUpperCase() + '\n';
+    else if (b.t === 'ol') b.x.forEach(s => { t += plain(s) + '\n'; });
+    else t += plain(String(b.x).replace(/<[^>]+>/g, '')) + '\n';
+  });
+  return t;
+}
+
+async function copiarRico(html, txt, msg) {
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        'text/html': new Blob([html], { type: 'text/html' }),
+        'text/plain': new Blob([txt], { type: 'text/plain' })
+      })
+    ]);
+  } catch (_) {
+    const d = document.createElement('div');
+    d.innerHTML = html;
+    d.style.cssText = 'position:fixed;left:-9999px';
+    document.body.appendChild(d);
+    const r = document.createRange();
+    r.selectNodeContents(d);
+    const s = getSelection();
+    s.removeAllRanges();
+    s.addRange(r);
+    document.execCommand('copy');
+    s.removeAllRanges();
+    d.remove();
+  }
+  toast(msg);
+}
+
+// =========================================================
+// 9. INTERFAZ, EVENTOS Y ARRANQUE
+// =========================================================
+function datosCompletos() { return camposRequeridos().every(r => r.ok); }
+
+function refresh() {
+  const info = analizarOrganizacion($('org').value);
+  const badge = $('orgCatBadge');
+  if (badge) {
+    badge.textContent = $('org').value.trim()
+      ? `${info.etiqueta} · ${pulir(info.prefPertenencia)}`
+      : 'Clasificación: Organización / Institución / Rubro';
+  }
+  $('titleText').innerHTML = datosCompletos()
+    ? esc(construirTitulo())
+    : '<span class="font-sans text-base font-medium text-gold-700 dark:text-gold-200">Complete los datos del proyecto para formular el título</span>';
+}
+
+function renderAutores() {
+  $('authorsBox').innerHTML = Object.entries(AUTORES).map(([k, a]) => `
+    <button type="button" class="author" data-autor="${k}" aria-pressed="${S.autor === k}">
+      <div class="font-display font-bold text-sm">${esc(a.nombre)}</div>
+      <div class="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">${esc(a.obra)} (${a.corto.match(/\d{4}/)[0]})</div>
+    </button>
+  `).join('');
+}
+
+function elegirAutor(k) {
+  if (!validar()) return;
+  S.autor = k;
+  S.R = generar(k);
+  renderAutores();
+  renderOut();
+  $('resultsCard').classList.remove('hidden');
+  refresh();
+  icons();
+  $('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function regenerar() {
+  if (S.autor && S.R && camposRequeridos().every(r => r.ok)) {
+    S.R = generar(S.autor);
+    renderOut();
+  }
+}
+
+function modal(title, body, type, actions) {
+  $('modalTitle').textContent = title;
+  $('modalBody').innerHTML = body;
+  $('modalIcon').className = 'mt-0.5 h-9 w-9 shrink-0 rounded-full flex items-center justify-center ' +
+    (type === 'alert' ? 'bg-red-50 text-red-600' : 'bg-gold-100 text-gold-700');
+  $('modalIcon').innerHTML = `<i data-lucide="${type === 'alert' ? 'alert-triangle' : 'info'}" class="h-5 w-5"></i>`;
+  const list = actions || [{ t: 'Entendido', c: 'btn btn-gold', f: closeModal }];
+  $('modalActions').innerHTML = list.map((a, i) => `<button type="button" class="${a.c}" data-mi="${i}">${a.t}</button>`).join('');
+  $('modalActions').querySelectorAll('button').forEach((b, i) => { b.onclick = list[i].f; });
+  $('modal').classList.remove('hidden');
+  $('modal').classList.add('flex');
+  icons();
+}
+
+function closeModal() {
+  $('modal').classList.add('hidden');
+  $('modal').classList.remove('flex');
+}
+
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'fixed bottom-5 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-zinc-900 text-white text-sm px-4 py-2.5 shadow-lg fade no-print';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+
+function icons() {
+  try {
+    if (window.lucide) lucide.createIcons();
+  } catch (_) {}
+}
+
+function setSeg(id, val) {
+  document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === val));
+}
+
+function reiniciar() {
+  modal('¿Empezar de nuevo?', 'Se borrarán las variables, el contexto y los resultados.', 'info', [
+    { t: 'Cancelar', c: 'btn btn-ghost', f: closeModal },
+    {
+      t: 'Sí, empezar de nuevo',
+      c: 'btn btn-gold',
+      f: () => {
+        closeModal();
+        S = estadoInicial();
+        $('orgTipo').value = 'auto';
+        ['org', 'pob', 'lugar', 'anio'].forEach(i => { $(i).value = ''; });
+        ['segEnfoque', 'segAlcance', 'segEstructura'].forEach((id, i) => setSeg(id, ['cuanti', 'corr', 'bi'][i]));
+        $('resultsCard').classList.add('hidden');
+        renderAutores();
+        renderVars();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  ]);
+}
+
+function toggleTema() {
+  document.documentElement.classList.toggle('dark');
+  try {
+    localStorage.setItem('tema', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  } catch (_) {}
+}
+
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.classList) t.classList.remove('invalid');
+  if (t.dataset.k) {
+    const v = getVar(t.dataset.k);
+    const o = t.dataset.d !== undefined ? v.dims[+t.dataset.d] : v;
+    const f = t.dataset.f;
+    if (f === 'name') {
+      o.name = t.value;
+      o.art = guessArt(t.value);
+    }
+  }
+  if (t.id === 'anio') t.value = t.value.replace(/\D/g, '').slice(0, 4);
+  refresh();
+  regenerar();
+});
+
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'medChk') {
+    S.mediadora = t.checked;
+    renderVars();
+  }
+  if (t.tagName === 'SELECT' || t.type === 'checkbox') {
+    refresh();
+    regenerar();
+  }
+});
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('button,[data-act]');
+  if (!b) return;
+  if (b.dataset.autor) {
+    elegirAutor(b.dataset.autor);
+    return;
+  }
+  const seg = b.closest('.seg');
+  if (seg && b.dataset.v) {
+    setSeg(seg.id, b.dataset.v);
+    if (seg.id === 'segEnfoque') {
+      if (b.dataset.v === 'cuali') {
+        setSeg('segEnfoque', 'cuanti');
+        S.enfoque = 'cuanti';
+        modal(
+          'Enfoque cualitativo no disponible',
+          'Esta herramienta está parametrizada solo para el enfoque cuantitativo que exige la Escuela Profesional de Administración. Por eso se mantiene el enfoque cuantitativo.',
+          'alert'
+        );
+      } else {
+        S.enfoque = 'cuanti';
+      }
+    }
+    if (seg.id === 'segAlcance') {
+      S.alcance = b.dataset.v;
+      if (S.alcance === 'corr') S.mediadora = false;
+      renderVars();
+    }
+    if (seg.id === 'segEstructura') {
+      S.estructura = b.dataset.v;
+      if (S.estructura === 'bi') {
+        S.preds = S.preds.slice(0, 1);
+        S.mediadora = false;
+      } else {
+        while (S.preds.length < 2) S.preds.push(nuevaVar('variable'));
+      }
+      renderVars();
+    }
+    refresh();
+    regenerar();
+    return;
+  }
+  const act = b.dataset.act;
+  if (act === 'addVar') {
+    S.preds.push(nuevaVar('variable'));
+    renderVars();
+    regenerar();
+  }
+  if (act === 'delVar') {
+    S.preds.splice(+b.dataset.k.slice(1), 1);
+    renderVars();
+    regenerar();
+  }
+  if (act === 'addDim') {
+    const v = getVar(b.dataset.k);
+    v.dims.push(nuevaDim(v.dims.length + 1));
+    renderVars();
+    regenerar();
+  }
+  if (act === 'delDim') {
+    const v = getVar(b.dataset.k);
+    v.dims.splice(+b.dataset.d, 1);
+    v.dims.forEach((d, i) => { d.ph = 'dimensión ' + (i + 1); });
+    renderVars();
+    regenerar();
+  }
+  if (b.id === 'copyTitleBtn') {
+    if (!datosCompletos()) {
+      validar();
+      return;
+    }
+    const t = construirTitulo();
+    copiarRico(`<p style="${TNR};font-weight:bold">${esc(plain(t))}</p>`, plain(t), 'Título copiado (Times New Roman 12, negrita)');
+  }
+  if (b.id === 'copyAllBtn') {
+    copiarRico(htmlCopia(), textoCopia(), 'Resultado copiado en Times New Roman 12: pégalo en Word');
+    return;
+  }
+  if (b.id === 'resetBtn') reiniciar();
+  if (b.id === 'themeBtn') toggleTema();
+});
+
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+
+try {
+  if (localStorage.getItem('tema') === 'dark') document.documentElement.classList.add('dark');
+} catch (_) {}
+
+renderAutores();
+renderVars();
+refresh();
+icons();
+</script>
+</body>
+</html>
+</body></html>
